@@ -1,4 +1,4 @@
 pypeline
 ========
 
-Graph based data processing for python
+Graph based data processing for python.
