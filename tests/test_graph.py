@@ -189,6 +189,19 @@ def test_graph_join():
                            ("a",): []}
 
 
+def test_graph_fan():
+    g = Graph(a, b, c)
+    g.fan(g.a, [g.b, g.c.target_param])
+
+    assert g._downstream == {("a",): [EdgeDef(("b",), None), EdgeDef(("c",), "target_param")],
+                             ("b",): [],
+                             ("c",): []}
+
+    assert g._upstream == {("c",): [EdgeDef(("a",), "target_param")],
+                           ("b",): [EdgeDef(("a",), None)],
+                           ("a",): []}
+
+
 def test_graph_union():
     g1 = Graph(a)
     g1.nested = Graph(b)

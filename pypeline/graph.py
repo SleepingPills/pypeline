@@ -93,6 +93,12 @@ class BaseGraph(object):
 
         return self
 
+    def fan(self, from_node, targets):
+        for target in targets:
+            self._pipe((from_node, target))
+
+        return self
+
     def _pipe(self, nodes):
         """
         Pipeline the supplied nodes together (in order).
