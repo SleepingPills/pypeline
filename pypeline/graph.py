@@ -164,10 +164,15 @@ class BaseGraph(object):
                     target_graph._store_node(value)
                 else:
                     new_prefix = prefix + (key,)
-                    target_graph._items[key] = new_graph = SubGraph(new_prefix,
-                                                                    self._downstream,
-                                                                    self._upstream,
-                                                                    self._root)
+
+                    try:
+                        new_graph = target_graph._items[key]
+                    except KeyError:
+                        target_graph._items[key] = new_graph = SubGraph(new_prefix,
+                                                                        self._downstream,
+                                                                        self._upstream,
+                                                                        self._root)
+
                     _copy_structure(value, new_graph, new_prefix)
 
         _copy_structure(graph, root, root._prefix)

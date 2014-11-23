@@ -1,7 +1,7 @@
 from pytest import raises
 from functools import partial
 
-from pypeline.graph import node, Graph, EdgeDef
+from pypeline.graph import node, Graph, EdgeDef, pipe
 
 
 def _node_def_equals(candidate, graph, func, path, args, kwargs):
@@ -200,6 +200,31 @@ def test_graph_fan():
     assert g._upstream == {("c",): [EdgeDef(("a",), "target_param")],
                            ("b",): [EdgeDef(("a",), None)],
                            ("a",): []}
+
+
+def test_merged_graph_shared_root():
+    g_base = Graph(a)
+
+    g1 = Graph(base=g_base, sub_b=Graph(b))
+    g1.pipe(g1.base.a, g1.sub_b.b)
+
+    g2 = Graph(base=g_base, sub_c=Graph(c))
+    g2.pipe(g2.base.a, g2.sub_c.c)
+
+    comb = Graph(g1, g2)
+
+    assert _node_def_equals(comb.base.a, comb, a, ("base", "a"), (), {})
+    assert _node_def_equals(comb.sub_b.b, comb, b, ("sub_b", "b"), (), {})
+    assert _node_def_equals(comb.sub_c.c, comb, c, ("sub_c", "c"), (), {})
+
+    assert comb._downstream == {('base', 'a'): [EdgeDef(node=('sub_b', 'b'), param=None),
+                                                EdgeDef(node=('sub_c', 'c'), param=None)],
+                                ('sub_b', 'b'): [],
+                                ('sub_c', 'c'): []}
+
+    assert comb._upstream == {('base', 'a'): [],
+                              ('sub_b', 'b'): [EdgeDef(node=('base', 'a'), param=None)],
+                              ('sub_c', 'c'): [EdgeDef(node=('base', 'a'), param=None)]}
 
 
 def test_graph_union():
