@@ -179,8 +179,18 @@ class BaseGraph(object):
 
         def _copy_edges(source_edges, target_edges):
             for source, targets in source_edges.iteritems():
-                rebased_targets = [EdgeDef(root._prefix + target.node, target.param) for target in targets]
-                target_edges[root._prefix + source].extend(rebased_targets)
+                target_edge = target_edges[root._prefix + source]
+
+                # Filter out edge definitions already present.
+                # This needs to be done in two passes because there can be deliberately duplicate edge definitions
+                # for nodes.
+                rebased_targets = []
+                for target in targets:
+                    edge = EdgeDef(root._prefix + target.node, target.param)
+                    if edge not in target_edge:
+                        rebased_targets.append(edge)
+
+                target_edge.extend(rebased_targets)
 
         _copy_edges(graph._downstream, self._downstream)
         _copy_edges(graph._upstream, self._upstream)
