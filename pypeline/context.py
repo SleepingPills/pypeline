@@ -172,6 +172,11 @@ class NodeState(NodeStateBase):
         self._args = args
         self._kwargs = kwargs
 
+    def update(self, **kwargs):
+        self._set_kwargs(kwargs, replace=False)
+
+        self._invalidate()
+
     def _set_params(self, args, kwargs):
         """
         Set the node parameters and invalidate this node and the dependent nodes.

@@ -102,6 +102,18 @@ def test_node_set_params():
     assert g.a.val == 100
 
 
+def test_node_update_params():
+    g = Graph(partial(a, 5, y=10))()
+
+    # Assert that cached evaluation returns results with the default parameters
+    assert g.a.val == 50
+
+    # Update `y`
+    g.a.update(y=7)
+
+    assert g.a.val == 35
+
+
 def test_node_set_params_invalidate():
     g = pipe(partial(a, 5), partial(b, fudge=10))()
 
