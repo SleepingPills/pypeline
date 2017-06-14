@@ -209,7 +209,7 @@ class NodeState(NodeStateBase):
 
         # Filter out any arguments not in the arg spec if there is no kwargs catch-all
         if self._args_spec.keywords is None:
-            for k, v in kwargs.iteritems():
+            for k, v in kwargs.items():
                 if k in self._args_spec:
                     self._kwargs[k] = v
         else:
@@ -307,7 +307,7 @@ class NodeGroup(object):
         spec_params = {}
 
         # Split out globally applied and node specific parameters.
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             if key in self._items:
                 spec_params[key] = value
             else:
@@ -339,7 +339,7 @@ class NodeGroup(object):
         :param spec_params: Node specific parameters or a hierarchical dictionary containing specific parameters.
         :param global_params: Global parameters that will be also applied.
         """
-        for item_key, item_params in spec_params.iteritems():
+        for item_key, item_params in spec_params.items():
             if isinstance(item_params, _params):
                 self[item_key]._set_params(item_params.args, dict(global_params, **item_params.kwargs))
             elif isinstance(item_params, dict):
@@ -396,7 +396,7 @@ class Context(NodeGroup):
         upstream = graph_blueprint._upstream
 
         def _walk_graph(graph, target_group):
-            for key, value in graph._items.iteritems():
+            for key, value in graph._items.items():
                 if isinstance(value, NodeDef):
                     state = NodeState(key, value.func, value.args, value.kwargs.copy())
                     target_group._set_item(key, state)
@@ -409,7 +409,7 @@ class Context(NodeGroup):
         _walk_graph(graph_blueprint, self)
 
         def _parse_edges(edges, add_func):
-            for source, targets in edges.iteritems():
+            for source, targets in edges.items():
                 for target in targets:
                     add_func(self._nodes[source], target)
 

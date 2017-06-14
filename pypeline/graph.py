@@ -62,7 +62,7 @@ class BaseGraph(object):
         for item in graphs:
             self._store(item)
 
-        for name, item in named_graphs.iteritems():
+        for name, item in named_graphs.items():
             self._store(item, name=name)
 
     def pipe(self, *nodes):
@@ -113,8 +113,8 @@ class BaseGraph(object):
             else:
                 vertices.append(EdgeDef(self._store_node(item), None))
 
-        for i in xrange(1, len(vertices)):
-            source = vertices[i-1]
+        for i in range(1, len(vertices)):
+            source = vertices[i - 1]
             target = vertices[i]
 
             self._downstream[source.node].append(target)
@@ -159,7 +159,7 @@ class BaseGraph(object):
 
         # Function for recursively copying over the source graph structure to the target
         def _copy_structure(source_graph, target_graph, prefix):
-            for key, value in source_graph._items.iteritems():
+            for key, value in source_graph._items.items():
                 if isinstance(value, NodeDef):
                     target_graph._store_node(value)
                 else:
@@ -178,7 +178,7 @@ class BaseGraph(object):
         _copy_structure(graph, root, root._prefix)
 
         def _copy_edges(source_edges, target_edges):
-            for source, targets in source_edges.iteritems():
+            for source, targets in source_edges.items():
                 target_edge = target_edges[root._prefix + source]
 
                 # Filter out edge definitions already present.
@@ -318,7 +318,7 @@ class Graph(BaseGraph):
         for item in items:
             self._store(item)
 
-        for name, item in named_items.iteritems():
+        for name, item in named_items.items():
             self._store(item, name=name)
 
     def __call__(self, **kwargs):
